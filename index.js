@@ -20,6 +20,7 @@ async function run() {
   try {
     await client.connect();
     const userCollection = client.db("user").collection("services");
+    const userComments = client.db("CommentSection").collection("comment");
 
     app.get("/user", async (req, res) => {
       const query = {};
@@ -28,7 +29,7 @@ async function run() {
       res.send(usersData);
     });
 
-    // Post method
+    // ---------------Post method-------------------
     app.post("/user", async (req, res) => {
       const user = req.body;
       const result = await userCollection.insertOne(user);
@@ -36,7 +37,22 @@ async function run() {
       console.log(result);
     });
 
-    // Delete
+    // --------------Post Comment method------------------
+    app.post("/comment", async (req, res) => {
+      const user = req.body;
+      const result = await userComments.insertOne(user);
+      res.send(result);
+    });
+
+    //----------------- Get Comment method----------------
+    app.get("/comment", async (req, res) => {
+      const query = {};
+      const getData = userComments.find(query);
+      const result = await getData.toArray();
+      res.send(result);
+    });
+
+    // -----------------Delete---------------------------
     app.delete("/user/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
@@ -44,7 +60,15 @@ async function run() {
       res.send(result);
     });
 
-    // Find One
+    // ------------------Delete Comment-------------------
+    app.delete("/comment/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await userComments.deleteOne(query);
+      res.send(result);
+    });
+
+    // ----------------Find One-------------------------
     app.get("/user/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
@@ -52,7 +76,7 @@ async function run() {
       res.send(result);
     });
 
-    // Put method-----------------
+    // -----------------Put method-----------------
     app.put("/user/:id", async (req, res) => {
       const id = req.params.id;
       const updatedUser = req.body;
