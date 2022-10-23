@@ -93,7 +93,7 @@ async function run() {
   }
 }
 run().catch(console.dir);
-
+// -----------Get API------------------------
 app.get("/", async (req, res) => {
   res.send("hello !! I am from CRUD operation");
   console.log("server connected");
